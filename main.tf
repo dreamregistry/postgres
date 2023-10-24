@@ -46,6 +46,11 @@ output "POSTGRES_URL" {
   value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${docker_container.postgres.ports[0].external}/${random_pet.dbname.id}"
 }
 
+output "POSTGRES_ROOT_URL" {
+    sensitive = true
+    value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${docker_container.postgres.ports[0].external}"
+}
+
 output "DBNAME" {
   sensitive = true
   value     = random_pet.dbname.id
