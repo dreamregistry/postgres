@@ -17,6 +17,11 @@ terraform {
 provider "random" {}
 provider "docker" {}
 
+variable "port" {
+  type    = number
+  default = 5432
+}
+
 resource "random_pet" "dbname" {
   length = 1
 }
@@ -31,7 +36,7 @@ resource "docker_container" "postgres" {
   name  = random_pet.dbname.id
   ports {
     internal = 5432
-    external = 5432
+    external = var.port
   }
 
   env = [
@@ -47,8 +52,8 @@ output "POSTGRES_URL" {
 }
 
 output "POSTGRES_ROOT_URL" {
-    sensitive = true
-    value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${docker_container.postgres.ports[0].external}"
+  sensitive = true
+  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${docker_container.postgres.ports[0].external}"
 }
 
 output "DBNAME" {
