@@ -23,8 +23,8 @@ variable "port" {
 }
 
 variable "network_mode" {
-    type    = string
-    default = "bridge"
+  type    = string
+  default = "bridge"
 }
 
 resource "random_pet" "dbname" {
@@ -37,8 +37,8 @@ resource "docker_image" "postgres" {
 }
 
 resource "docker_container" "postgres" {
-  image = docker_image.postgres.image_id
-  name  = random_pet.dbname.id
+  image        = docker_image.postgres.image_id
+  name         = random_pet.dbname.id
   network_mode = var.network_mode
   ports {
     internal = 5432
@@ -52,14 +52,18 @@ resource "docker_container" "postgres" {
   ]
 }
 
+locals {
+  port = var.network_mode == "host" ?  5432: docker_container.postgres.ports[0].external
+}
+
 output "POSTGRES_URL" {
   sensitive = true
-  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${docker_container.postgres.ports[0].external}/${random_pet.dbname.id}"
+  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${local.port}/${random_pet.dbname.id}"
 }
 
 output "POSTGRES_ROOT_URL" {
   sensitive = true
-  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${docker_container.postgres.ports[0].external}"
+  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${local.port}"
 }
 
 output "DBNAME" {
