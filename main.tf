@@ -22,6 +22,11 @@ variable "port" {
   default = 5432
 }
 
+variable "network_mode" {
+    type    = string
+    default = "bridge"
+}
+
 resource "random_pet" "dbname" {
   length = 1
 }
@@ -34,6 +39,7 @@ resource "docker_image" "postgres" {
 resource "docker_container" "postgres" {
   image = docker_image.postgres.image_id
   name  = random_pet.dbname.id
+  network_mode = var.network_mode
   ports {
     internal = 5432
     external = var.port
