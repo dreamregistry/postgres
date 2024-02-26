@@ -50,6 +50,12 @@ resource "docker_container" "postgres" {
     "POSTGRES_USER=${random_pet.dbname.id}",
     "POSTGRES_DB=${random_pet.dbname.id}"
   ]
+
+  volumes {
+    container_path  = "/var/lib/postgresql/data"
+    host_path       = "${path.module}/${random_pet.dbname.id}"
+    read_only       = false
+  }
 }
 
 locals {
