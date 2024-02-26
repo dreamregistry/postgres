@@ -53,7 +53,7 @@ resource "docker_container" "postgres" {
 
   volumes {
     container_path  = "/var/lib/postgresql/data"
-    host_path       = "${path.module}/${random_pet.dbname.id}"
+    host_path       =  abspath("${path.module}/${random_pet.dbname.id}")
     read_only       = false
   }
 }
