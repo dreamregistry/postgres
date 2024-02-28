@@ -69,9 +69,9 @@ resource "docker_container" "postgres" {
   dynamic "volumes" {
     for_each = local.volumes
     content {
-      container_path = volumes.value['container_path']
-      host_path      = volumes.value['host_path']
-      read_only      = volumes.value['read_only']
+      container_path = volumes.value["container_path"]
+      host_path      = volumes.value["host_path"]
+      read_only      = volumes.value["read_only"]
     }
   }
 }
