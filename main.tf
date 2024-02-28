@@ -27,6 +27,21 @@ variable "network_mode" {
   default = "bridge"
 }
 
+variable "persist_data" {
+  type    = bool
+  default = true
+}
+
+locals {
+  volumes = var.persist_data ? [
+    {
+      container_path = "/var/lib/postgresql/data"
+      host_path      = abspath("${path.module}/${random_pet.dbname.id}")
+      read_only      = false
+    }
+  ] : []
+}
+
 resource "random_pet" "dbname" {
   length = 1
 }
@@ -51,15 +66,18 @@ resource "docker_container" "postgres" {
     "POSTGRES_DB=${random_pet.dbname.id}"
   ]
 
-  volumes {
-    container_path  = "/var/lib/postgresql/data"
-    host_path       =  abspath("${path.module}/${random_pet.dbname.id}")
-    read_only       = false
+  dynamic "volumes" {
+    for_each = local.volumes
+    content {
+      container_path = volumes.value['container_path']
+      host_path      = volumes.value['host_path']
+      read_only      = volumes.value['read_only']
+    }
   }
 }
 
 locals {
-  port = var.network_mode == "host" ?  5432: docker_container.postgres.ports[0].external
+  port = var.network_mode == "host" ?  5432 : docker_container.postgres.ports[0].external
 }
 
 output "POSTGRES_URL" {
