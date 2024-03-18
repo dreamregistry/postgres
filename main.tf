@@ -32,11 +32,18 @@ variable "persist_data" {
   default = true
 }
 
+variable "data_path" {
+  type        = string
+  description = "Host path to persist data in case of persist_data is true."
+  default     = null
+
+}
+
 locals {
   volumes = var.persist_data ? [
     {
       container_path = "/var/lib/postgresql/data"
-      host_path      = abspath("${path.module}/${random_pet.dbname.id}")
+      host_path      = var.data_path != null ? var.data_path : abspath("${path.module}/${random_pet.dbname.id}")
       read_only      = false
     }
   ] : []
