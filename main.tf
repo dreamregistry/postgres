@@ -43,7 +43,7 @@ locals {
   volumes = var.persist_data ? [
     {
       container_path = "/var/lib/postgresql/data"
-      host_path      = var.data_path != null ? abspath("${var.data_path}/${random_pet.dbname.id}") : abspath("${path.module}/${random_pet.dbname.id}")
+      host_path      = var.data_path != null ? pathexpand("${var.data_path}/${random_pet.dbname.id}") : abspath("${path.module}/${random_pet.dbname.id}")
       read_only      = false
     }
   ] : []
