@@ -54,8 +54,8 @@ resource "random_pet" "dbname" {
 }
 
 resource "docker_image" "postgres" {
-  name         = "postgres:latest"
-  keep_locally = false
+  name         = "novopattern/postgres:14.9-alpine-pgvector"
+  keep_locally = true
 }
 
 resource "docker_container" "postgres" {
