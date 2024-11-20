@@ -36,7 +36,11 @@ variable "data_path" {
   type        = string
   description = "Host path to persist data in case of persist_data is true."
   default     = null
+}
 
+variable "docker_image" {
+  type    = string
+  default = "novopattern/postgres:14.9-alpine-pgvector"
 }
 
 locals {
@@ -54,7 +58,7 @@ resource "random_pet" "dbname" {
 }
 
 resource "docker_image" "postgres" {
-  name         = "novopattern/postgres:14.9-alpine-pgvector"
+  name         = var.docker_image
   keep_locally = true
 }
 
